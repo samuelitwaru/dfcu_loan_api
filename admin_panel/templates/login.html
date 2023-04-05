@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load app_tags %}
+
+{% block body %}
+
+
+<div class="container" align="center">
+    <div align="center">
+        <img style="height: 150; width: 150" src="{% static 'img/logo.png' %}" />
+    </div>
+
+    <div class="border bg-light rounded-top p-2" style="max-width:400; min-height: 300">
+
+        <h3>Admin Login</h3>
+        {% include 'alert.html' %}
+        <div class="tab-content" id="pills-tabContent" align="left">
+
+            <div class=" tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="pills-login-tab">
+                <form class="m-0" method="POST" action="{% url 'admin_panel:login' %}" align="left">
+                    {% csrf_token %}
+
+                    {% render_field login_form.username class='form-control' %}
+                    {% render_field login_form.password class='form-control' %}
+
+                    <div align="center">
+                        <button class="btn btn-primary">Login <span class="fa fa-sign-in"></span></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
+{% endblock %}
