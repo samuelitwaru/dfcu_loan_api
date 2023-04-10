@@ -2,6 +2,8 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, get_user, login, logout
 from django.shortcuts import redirect, render
 
+from api.models import Request
+
 from .forms import LoginForm
 
 
@@ -12,8 +14,14 @@ def index(request):
     Else, show login interface
     """
 
-    if get_user(request).is_authenticated:  
-        return render(request, 'admin.html')
+    if get_user(request).is_authenticated:
+        context = {
+            "no_requests": Request.objects.count(),
+            "no_failed": Request.objects.filter(status='F').count(),
+            "no_positive": Request.objects.filter(status='P').count(),
+            "no_negative": Request.objects.filter(status='N').count(),
+        }  
+        return render(request, 'admin.html', context)
     else:
         login_form = LoginForm()
         context = {"login_form": login_form}

@@ -1,6 +1,13 @@
 from django.core.validators import MinLengthValidator
 from django.db import models
 
+REQUEST_STATUS_CHOICES = [
+    ('F', 'FAILED'),
+    ('P', 'POSITIVE'),
+    ('N', 'NEGATIVE'),
+]
+
+
 
 # Create your models here.
 class Customer(models.Model):
@@ -19,3 +26,7 @@ class Loan(models.Model):
     def __str__(self) -> str:
         return f"{self.date} - {self.amount}"
     
+
+class Request(models.Model):
+    time = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=1, choices=REQUEST_STATUS_CHOICES)
