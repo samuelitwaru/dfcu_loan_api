@@ -18,5 +18,5 @@ from .views import *
 
 urlpatterns = [
     path('', loan_status, name='loan_status'),
-
+    path('download-response', download_response, name='download_response'),
 ]

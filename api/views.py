@@ -1,9 +1,14 @@
+import os
+
+from django.http import HttpResponse
+from django.conf import settings
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .models import Loan, Customer
+from .models import Customer, Loan
 from .serializers import AccountNumberSerializer, LoanSerializer
+from utils import get_host_name
 
 
 @api_view(['POST'])
@@ -31,5 +36,24 @@ def loan_status(request):
             else:
                 return Response({'detail': 'account number not found'}, status=status.HTTP_400_BAD_REQUEST)
 
-
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+@api_view(['POST'])
+def download_response(request):
+    content = request.data['content']
+    # Replace 'file.txt' with the name of your file
+    filename = 'response.txt'
+    # Replace 'path/to/file/' with the path to your file
+    filepath = os.path.join(getattr(settings, 'MEDIA_ROOT'), filename)
+
+    with open(filepath, 'w') as f:
+        f.write(content)
+        # response = HttpResponse(f.read(), content_type='text/plain')
+        # response['Content-Disposition'] = f'attachment; filename={filename}'
+        # return response
+    
+    host = get_host_name(request)
+    file_url = f'{host}/media/{filename}'
+    print(file_url)
+    return Response({'file_url': file_url})
