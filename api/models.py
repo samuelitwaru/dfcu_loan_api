@@ -19,13 +19,13 @@ class Account(models.Model):
 
 
 class Loan(models.Model):
-    customer = models.ForeignKey(
+    account = models.ForeignKey(
         to=Account, null=True, on_delete=models.SET_NULL)
     date = models.DateField(auto_now_add=True)
     amount = models.IntegerField()
 
     def __str__(self) -> str:
-        return f"{self.customer} - {self.date} - {self.amount}"
+        return f"{self.account} - {self.date} - {self.amount}"
 
 
 class Request(models.Model):
