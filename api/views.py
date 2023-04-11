@@ -26,11 +26,11 @@ def loan_status(request):
         if serializer.is_valid():
             # get loan status
             account_number = request.data['account_number']
-            customer = Account.objects.filter(
+            account = Account.objects.filter(
                 account_number=account_number).first()
-            print(customer)
-            if customer:
-                loan_query = Loan.objects.filter(customer=customer)
+            print(account)
+            if account:
+                loan_query = Loan.objects.filter(account=account)
                 loan_count = loan_query.count()
                 if loan_count:
                     new_req.status = 'P'

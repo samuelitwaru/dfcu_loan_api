@@ -20,13 +20,12 @@ def index(request):
             "no_failed": Request.objects.filter(status='F').count(),
             "no_positive": Request.objects.filter(status='P').count(),
             "no_negative": Request.objects.filter(status='N').count(),
-        }  
+        }
         return render(request, 'admin.html', context)
     else:
         login_form = LoginForm()
         context = {"login_form": login_form}
         return render(request, 'login.html', context)
-
 
 
 def login_view(request):
@@ -50,3 +49,7 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('admin_panel:index')
+
+
+def docs(request):
+    return render(request, 'docs.html')

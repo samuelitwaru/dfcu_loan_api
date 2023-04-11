@@ -1,0 +1,261 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DFCU API</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h1 id="dfcu-api-documentation">DFCU API Documentation</h1>
+<p>The API is built with python using the <a href="https://www.djangoproject.com/">Django framework</a> and is hosted at the url: <a href="https://dfcu.pythonanywhere.com">https://dfcu.pythonanywhere.com</a></p>
+<p>The Admin Interface for monitoring the API performance can be accessed at <a href="https://dfcu.pythonanywhere.com">https://dfcu.pythonanywhere.com</a> through authentication</p>
+<p>The API simulator is built with <a href="https://nodejs.org/">nodejs</a> using the front end framework <a href="https://vuejs.org/">vuejs</a> alongside <a href="https://quasar.dev/">quasar framework</a> and is hosted at <a href="https://dfcu-api-simulator.web.app/">https://dfcu-api-simulator.web.app/</a></p>
+<h2 id="api-end-points">API End Points</h2>
+<p>The API contains one endpoint as detailed below:</p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BASE URL</td>
+<td><a href="https://dfcu.pythonanywhere.com">https://dfcu.pythonanywhere.com</a></td>
+</tr>
+<tr>
+<td>ENDPOINT</td>
+<td>/api/loan-status</td>
+</tr>
+<tr>
+<td>METHODS</td>
+<td>[POST]</td>
+</tr>
+<tr>
+<td>DESCRIPTION</td>
+<td>The endpoint validates the <code>account_number</code> passed as a parameter against a list of account numbers stored in the database. If it is invalid, it returns <code>400 Bad Request</code> error code. If it is valid, it returns the account number’s loan status which is either <code>{"message":"no loan found"}</code> or <code>[list of loans]</code> with status code <code>200 OK</code></td>
+</tr>
+</tbody>
+</table><hr>
+<p><strong>Data Parameters</strong></p>
+
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Validation</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>account_number</code></td>
+<td>string</td>
+<td>Must be a ten digit string</td>
+<td><code>1234567890</code>,<code>1100118933</code></td>
+</tr>
+</tbody>
+</table><hr>
+<p><strong>Responses</strong></p>
+
+<table>
+<thead>
+<tr>
+<th>Request Case</th>
+<th>Response</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>For a valid account number, e.g <code>1234567890</code> that is part of the list in the database</td>
+<td><code>{"message":"no loan found"}</code> or <code>[list of loans]</code> depending on whether loans were found or not</td>
+</tr>
+<tr>
+<td>For an invalid account number, e.g <code>123</code> or <code>1234567897654</code></td>
+<td>An Error code <code>400 Bad Request</code> is returned</td>
+</tr>
+</tbody>
+</table><h1 id="api-deployment-guide">API Deployment Guide</h1>
+<p><strong>Github link:</strong> <code>https://github.com/samuelitwaru/dfcu_loan_api</code></p>
+<h2 id="requirements">Requirements</h2>
+
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Deployment Server</td>
+<td>A deployment server preferably running a linux distribution and setup a username and password for ssh access.</td>
+</tr>
+<tr>
+<td>Python</td>
+<td>A python installation of version &gt;= 3.5</td>
+</tr>
+<tr>
+<td>A web server</td>
+<td>Install a web server on the deployment server for example NGINX or APACHE</td>
+</tr>
+</tbody>
+</table><p>SSH into your server by entering the command below and then your password via the terminal window.</p>
+<blockquote>
+<p><code>ssh your_username@your_server_ip</code></p>
+</blockquote>
+<p>Clone the source code from <code>https://github.com/samuelitwaru/dfcu_loan_api</code> to your home directory.</p>
+<blockquote>
+<p><code>$git clone https://github.com/samuelitwaru/dfcu_loan_api</code></p>
+</blockquote>
+<p>Navigate to the source directory</p>
+<blockquote>
+<p><code>$cd dfcu_loan_api</code></p>
+</blockquote>
+<p>Create a virtual environment to hold the projects dependencies</p>
+<blockquote>
+<p><code>$python -m venv &lt;name_of_your_virtual_enviroment&gt;</code></p>
+</blockquote>
+<p>Activate the virtual environment</p>
+<blockquote>
+<p><code>$source &lt;name_of_your_virtual_enviroment&gt;/bin/activate</code></p>
+</blockquote>
+<p>Install project dependencies</p>
+<blockquote>
+<p><code>$pip install -r requirements.txt</code></p>
+</blockquote>
+<p>We shall use <code>gunicorn</code> as our deployment server as it can candle many requests at the same time.<br>
+To run the server, use <code>$gunicorn --bind 0.0.0.0:8000 dfcu_loan_api.wsgi</code></p>
+<p>At this point, the server should be up and running and you can access the application at <code>http://server_api_address:8000</code></p>
+<p>To take advantage of high performance connection handling mechanisms and easy-to-implement security features, set up <code>NGINX</code> or <code>APACHE</code> in front of <code>gunicorn</code></p>
+<h1 id="user-guide">User Guide</h1>
+<h2 id="database">Database</h2>
+<p>The API’s database is implemented with an sqlite database. Data can be added or altered in database through the django admin panel located at the endpoint <code>/admin</code></p>
+<p>Here are the default database records to help you get started quickly.</p>
+<h3 id="users">1. users</h3>
+
+<table>
+<thead>
+<tr>
+<th>username</th>
+<th>password</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>samuelitwaru</td>
+<td>dfcu@123</td>
+</tr>
+</tbody>
+</table><hr>
+<h3 id="accounts">2. accounts</h3>
+
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>account_number</th>
+<th>name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>1000000001</td>
+<td>Sam</td>
+</tr>
+<tr>
+<td>2</td>
+<td>1000000002</td>
+<td>Dan</td>
+</tr>
+<tr>
+<td>3</td>
+<td>1000000003</td>
+<td>Den</td>
+</tr>
+<tr>
+<td>4</td>
+<td>1000000004</td>
+<td>Tim</td>
+</tr>
+<tr>
+<td>5</td>
+<td>1000000005</td>
+<td>Ben</td>
+</tr>
+</tbody>
+</table><hr>
+<h3 id="loans">3. loans</h3>
+
+<table>
+<thead>
+<tr>
+<th>account</th>
+<th>date</th>
+<th>amount</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>2023-04-03</td>
+<td>100000</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2023-04-11</td>
+<td>100000</td>
+</tr>
+<tr>
+<td>4</td>
+<td>2023-04-11</td>
+<td>500000</td>
+</tr>
+</tbody>
+</table><hr>
+<h2 id="user-authentication">User Authentication</h2>
+<p>The default user credentials to the admin panel are:<br>
+<code>username: samuelitwaru</code><br>
+<code>password: dfcu@123</code><br>
+However, you can create a new user by using the web server’s terminal within the directory of the application’s source code. Enter the following command and follow the prompts to do this.</p>
+<blockquote>
+<p><code>$python manage.py createsuperuser</code></p>
+</blockquote>
+<p><strong>NOTE</strong>: These credential will give you access to the API Admin Interface</p>
+<h1 id="api-simulator-application">API Simulator Application</h1>
+<p><strong>Github link:</strong> <code>https://github.com/samuelitwaru/dfcu_api_sumulator</code></p>
+<p>The API simulator is built with <a href="https://nodejs.org/">nodejs</a> using the front end framework <a href="https://vuejs.org/">vuejs</a> alongside <a href="https://quasar.dev/">quasar framework</a> and is hosted at <a href="https://dfcu-api-simulator.web.app/">https://dfcu-api-simulator.web.app/</a></p>
+<h2 id="deployment">Deployment</h2>
+
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>nodejs</td>
+<td>Install <code>nodejs</code>. You can get the instructions to do this from the nodejs official website <code>https://nodejs.org/</code></td>
+</tr>
+<tr>
+<td>quasar cli</td>
+<td>Install <code>quasar cli</code>. You can get the instructions to do this from the quasar framework official website <code>https://quasar.dev/</code></td>
+</tr>
+</tbody>
+</table><p>Clone the the API Simulator Application from the git repository: <code>https://github.com/samuelitwaru/dfcu_api_sumulator</code></p>
+<blockquote>
+<p><code>$git clone https://github.com/samuelitwaru/dfcu_api_sumulator</code></p>
+</blockquote>
+</div>
+</body>
+
+</html>
