@@ -4,4 +4,4 @@ from .models import *
 
 # Register your models here.
 admin.site.register(Loan)
-admin.site.register(Customer)
+admin.site.register(Account)

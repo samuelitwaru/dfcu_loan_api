@@ -17,6 +17,6 @@ from .views import *
 # router.register(r'metrics', MetricViewSet)
 
 urlpatterns = [
-    path('', loan_status, name='loan_status'),
+    path('loan-status', loan_status, name='loan_status'),
     path('download-response', download_response, name='download_response'),
 ]

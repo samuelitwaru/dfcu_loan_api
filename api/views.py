@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .models import Customer, Loan, Request
+from .models import Account, Loan, Request
 from .serializers import AccountNumberSerializer, LoanSerializer
 from utils import get_host_name
 
@@ -26,24 +26,27 @@ def loan_status(request):
         if serializer.is_valid():
             # get loan status
             account_number = request.data['account_number']
-            customer = Customer.objects.filter(account_number=account_number).first()
+            customer = Account.objects.filter(
+                account_number=account_number).first()
+            print(customer)
             if customer:
-                loan_query = Loan.objects.filter(customer=account_number)
+                loan_query = Loan.objects.filter(customer=customer)
                 loan_count = loan_query.count()
                 if loan_count:
                     new_req.status = 'P'
                     new_req.save()
-                    loan_serializer = LoanSerializer(loan_query.all(), many=True)
+                    loan_serializer = LoanSerializer(
+                        loan_query.all(), many=True)
                     return Response(loan_serializer.data)
                 else:
                     new_req.status = 'N'
                     new_req.save()
-                    return Response({"message":"no loan found"}, status=status.HTTP_200_OK)
+                    return Response({"message": "no loan found"}, status=status.HTTP_200_OK)
             else:
                 return Response({'message': 'account number not found'}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 
 @api_view(['POST'])
 def download_response(request):
@@ -58,7 +61,7 @@ def download_response(request):
         # response = HttpResponse(f.read(), content_type='text/plain')
         # response['Content-Disposition'] = f'attachment; filename={filename}'
         # return response
-    
+
     host = get_host_name(request)
     file_url = f'{host}/media/{filename}'
     print(file_url)

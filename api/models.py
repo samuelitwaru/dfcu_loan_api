@@ -8,24 +8,25 @@ REQUEST_STATUS_CHOICES = [
 ]
 
 
-
 # Create your models here.
-class Customer(models.Model):
+class Account(models.Model):
     name = models.CharField(max_length=128)
-    account_number = models.CharField(max_length=10, validators=[MinLengthValidator(10)])
+    account_number = models.CharField(
+        max_length=10, validators=[MinLengthValidator(10)])
 
     def __str__(self):
-        return self.name
+        return f"{self.name} - {self.account_number}"
 
 
 class Loan(models.Model):
-    customer = models.ForeignKey(to=Customer, null=True, on_delete=models.SET_NULL)
+    customer = models.ForeignKey(
+        to=Account, null=True, on_delete=models.SET_NULL)
     date = models.DateField(auto_now_add=True)
     amount = models.IntegerField()
 
     def __str__(self) -> str:
-        return f"{self.date} - {self.amount}"
-    
+        return f"{self.customer} - {self.date} - {self.amount}"
+
 
 class Request(models.Model):
     time = models.DateTimeField(auto_now_add=True)
